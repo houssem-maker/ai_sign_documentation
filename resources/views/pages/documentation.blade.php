@@ -52,8 +52,8 @@
 @include('partials.documentation-header')
 @include('partials.documentation-sidebar')
 
-<div class="ml-[288px] mt-16 flex flex-col min-h-[calc(100vh-56px)]">
-  <main class="flex-1 flex flex-col">
+<div class="ml-[288px] mt-16 flex flex-col h-[calc(100vh-64px)]">
+  <main id="main-content" class="flex-1 flex flex-col overflow-y-auto">
     <div class="bg-blue-50 border-b border-blue-100 px-10 py-6 flex items-center gap-1.5 text-[13px] text-slate-500">
       <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/>
@@ -118,23 +118,158 @@ const PAGES = {
   // INTRODUCTION
   // ═══════════════════════════════════════════
   'introduction/overview': {
-    title: 'AiSign API — Overview',
-    meta: 'The AiSign v1 API lets you programmatically manage documents, templates, recipients, fields, and signing workflows. It returns JSON responses and works with any language capable of HTTP requests.',
+    title: 'AiSign API',
+    meta: 'Programmatically manage documents, templates, recipients, fields, and signing workflows. Any language, any platform — if it speaks HTTP, it works with AiSign.',
     blocks: [
-      { type:'note', data:{ variant:'info', content:'Current version: <strong>v1.0.0</strong> &nbsp;·&nbsp; Last updated: October 2025 &nbsp;·&nbsp; Base URL: <code class="font-mono bg-white border border-blue-200 px-1 rounded">https://dev1.aisign.ai/api/v1</code>' }},
+      { type:'overview_hero', data:{
+          badge: 'v1.0.0',
+          baseUrl: 'https://dev1.aisign.ai/api/v1',
+          actions: [
+            { label:'Start Free Trial', href:'https://dev4.aisign.ai/plan/api-access/onboarding/form/free-trial', primary:true },
+            { label:'View Plans',       href:'https://dev4.aisign.ai/plan/api-access/onboarding/index',           primary:false },
+          ],
+          features: [
+            'JSON responses on every endpoint',
+            'API key authentication in one header',
+            '1 token = 1 activated document',
+          ]
+      }},
+
       { type:'note', data:{ variant:'warning', content:'The API is currently in the development phase and is only available via <strong>HTTP</strong>. HTTPS is required for all production environments.' }},
-      { type:'section_header', data:{ title:'What You Can Do', anchor:'what', level:2 }},
-      { type:'text', data:{ content:'The AiSign API covers the full document signing lifecycle:' }},
-      { type:'feature_list', data:{ items:[
-        { icon:'template', label:'Templates', desc:'List, inspect, and use pre-built signing templates to create documents instantly.' },
-        { icon:'doc',      label:'Documents',  desc:'Upload PDFs, assign recipients, place signature/form fields, activate for signing, and download completed files.' },
-        { icon:'token',    label:'Tokens',     desc:'Monitor your API token balance. Each document activation consumes exactly 1 token.' },
-        { icon:'log',      label:'Logs',       desc:'Retrieve a 30-day history of every API call made with your key.' },
-        { icon:'webhook',  label:'Webhooks',   desc:'Subscribe to real-time events such as document.completed or field.signed.' },
+
+      { type:'section_header', data:{ title:'Get Your API Access', anchor:'get-started', level:2 }},
+      { type:'text', data:{ content:'Three steps to start making API calls:' }},
+      { type:'onboarding_flow', data:{ steps:[
+        {
+          n: 1,
+          title: 'Choose a Plan',
+          desc: 'Pick a subscription that fits your volume. Start for free with 100 tokens.',
+          actions: [
+            { label: 'Start Free Trial', href: 'https://dev4.aisign.ai/plan/api-access/onboarding/form/free-trial', primary: true  },
+            { label: 'View All Plans',   href: 'https://dev4.aisign.ai/plan/api-access/onboarding/index',           primary: false },
+          ]
+        },
+        {
+          n: 2,
+          title: 'Manage Your Plan',
+          desc: 'View usage, upgrade, or change your current API subscription.',
+          actions: [
+            { label: 'My Plan', href: 'https://dev4.aisign.ai/plan/api-access/index', primary: true },
+          ]
+        },
+        {
+          n: 3,
+          title: 'Get Your API Key',
+          desc: 'Generate and manage your secret API keys from the dashboard.',
+          actions: [
+            { label: 'API Dashboard', href: 'https://dev4.aisign.ai/api-keys', primary: true },
+          ]
+        },
       ]}},
+
+      { type:'section_header', data:{ title:'What You Can Build', anchor:'what', level:2 }},
+      { type:'text', data:{ content:'The AiSign API covers the complete document signing lifecycle — from upload to signed PDF download.' }},
+      { type:'feature_cards', data:{ items:[
+        {
+          icon: 'key',
+          label: 'Authentication',
+          desc: 'Secure every request with a private API key. Supports Authorization header, X-API-Key, and query parameter methods.',
+          navKey: 'authentication/api-keys',
+        },
+        {
+          icon: 'template',
+          label: 'Templates',
+          desc: 'Reuse pre-built signing templates. Send a document for signatures with a single API call.',
+          navKey: 'templates/list-templates',
+        },
+        {
+          icon: 'doc',
+          label: 'Documents',
+          desc: 'Upload PDFs, assign recipients, place fields, activate for signing, and download the completed file.',
+          navKey: 'documents/upload',
+        },
+        {
+          icon: 'webhook',
+          label: 'Webhooks',
+          desc: 'Subscribe to real-time events like document.completed or field.signed and react instantly in your app.',
+          navKey: 'webhooks/overview',
+        },
+        {
+          icon: 'token',
+          label: 'Tokens',
+          desc: 'Monitor your token balance at any time. Each document activation consumes exactly 1 token.',
+          navKey: 'tokens/balance',
+        },
+        {
+          icon: 'log',
+          label: 'Logs',
+          desc: 'Retrieve a full 30-day history of every API call made with your key for debugging and auditing.',
+          navKey: 'logs/api-logs',
+        },
+      ]}},
+
+      { type:'section_header', data:{ title:'Explore the API', anchor:'explore', level:2 }},
+      { type:'text', data:{ content:'Jump directly to the topic you need:' }},
+      { type:'explore_grid', data:{ items:[
+        {
+          icon: 'auth',
+          label: 'API Keys',
+          desc: 'Learn the three authentication methods and understand permission scopes.',
+          navKey: 'authentication/api-keys',
+        },
+        {
+          icon: 'quickstart',
+          label: 'Quick Start Guide',
+          desc: 'Get a document signed in minutes — two complete workflows with cURL examples.',
+          navKey: 'introduction/quick-start',
+        },
+        {
+          icon: 'template',
+          label: 'Use a Template',
+          desc: 'Instantiate a template with real recipients. One call creates the document and generates signing URLs.',
+          navKey: 'templates/use-template',
+        },
+        {
+          icon: 'upload',
+          label: 'Upload a Document',
+          desc: 'Upload PDF, DOC, or DOCX files up to 10 MB. Add recipients and fields before activation.',
+          navKey: 'documents/upload',
+        },
+        {
+          icon: 'webhook',
+          label: 'Register a Webhook',
+          desc: 'Subscribe to document and field events with a URL endpoint in your application.',
+          navKey: 'webhooks/register-webhook',
+        },
+        {
+          icon: 'error',
+          label: 'Error Reference',
+          desc: 'Full list of HTTP status codes, error shapes, and how to handle them gracefully.',
+          navKey: 'error-handling/errors',
+        },
+        {
+          icon: 'status',
+          label: 'Document Lifecycle',
+          desc: 'Understand UPLOADED → PREPARED → PENDING → COMPLETED state transitions.',
+          navKey: 'status-lifecycle/lifecycle',
+        },
+        {
+          icon: 'limits',
+          label: 'Limits & Quotas',
+          desc: 'File size, rate limits, field counts, and other platform constraints.',
+          navKey: 'limits/limits',
+        },
+        {
+          icon: 'download',
+          label: 'Download Completed Doc',
+          desc: 'Retrieve the fully signed PDF once all recipients have completed their actions.',
+          navKey: 'documents/download',
+        },
+      ]}},
+
       { type:'section_header', data:{ title:'Response Format', anchor:'response-format', level:2 }},
-      { type:'text', data:{ content:'Every endpoint returns a consistent JSON envelope:' }},
-      { type:'code', data:{ language:'json', label:'Standard Response', content:`{
+      { type:'text', data:{ content:'Every endpoint returns a consistent JSON envelope with a <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">success</code> flag, a human-readable <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">message</code>, a <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">data</code> payload, and an <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">errors</code> object on failure.' }},
+      { type:'code', data:{ language:'json', label:'Standard Response Envelope', content:`{
   "success": true,
   "message": "Descriptive message",
   "data": { ... },
@@ -1740,16 +1875,41 @@ function toggleSection(id) {
 // ─────────────────────────────────────────────────
 // NAVIGATION
 // ─────────────────────────────────────────────────
+function navTo(key) {
+  const btn = document.querySelector(`[data-key="${key}"]`);
+  navigate(key, btn);
+  // auto-open the parent section if collapsed
+  if (btn) {
+    const section = btn.closest('[id^="sec-"]');
+    if (section && section.classList.contains('slide-close')) {
+      const id = section.id.replace('sec-','');
+      toggleSection(parseInt(id));
+    }
+  }
+}
+
 function navigate(key, btn) {
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('nav-active','font-semibold','text-[#2D74DE]'));
-  if (btn) { btn.classList.add('nav-active','font-semibold','text-[#2D74DE]'); }
+  // Always resolve the button — either the one clicked or found by data-key (handles direct/auto navigation)
+  const target = btn || document.querySelector(`[data-key="${key}"]`);
+  if (target) {
+    target.classList.add('nav-active','font-semibold','text-[#2D74DE]');
+    // Auto-open the parent section if it is currently collapsed
+    const section = target.closest('[id^="sec-"]');
+    if (section && section.classList.contains('slide-close')) {
+      const secId = parseInt(section.id.replace('sec-', ''));
+      toggleSection(secId);
+    }
+  }
   currentPage = key;
   renderPage(key);
   const parts = key.split('/');
   const section = parts[0].replace(/-/g,' ').replace(/\b\w/g, c=>c.toUpperCase());
   const page    = parts[1]?.replace(/-/g,' ').replace(/\b\w/g, c=>c.toUpperCase()) || '';
   document.getElementById('breadcrumb-text').textContent = `${section}  /  ${page}`;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Reset the main content scroll container to top on every navigation
+  const mainEl = document.getElementById('main-content');
+  if (mainEl) mainEl.scrollTop = 0;
 }
 
 // ─────────────────────────────────────────────────
@@ -1758,6 +1918,12 @@ function navigate(key, btn) {
 function renderPage(key) {
   const pg = PAGES[key];
   const el = document.getElementById('doc-content');
+  const isOverview = key === 'introduction/overview';
+  if (isOverview) {
+    el.className = 'px-10 py-10 max-w-[920px]';
+  } else {
+    el.className = 'px-24 py-10 max-w-[860px]';
+  }
   if (!pg) {
     const label = key.split('/').pop().replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
     el.innerHTML = `
@@ -1766,9 +1932,17 @@ function renderPage(key) {
       <p class="text-sm text-slate-400">Content coming soon.</p>`;
     return;
   }
+  const titleHtml = isOverview
+    ? `<h1 class="text-[30px] font-bold text-gray-900 tracking-tight mb-1">${pg.title}</h1>`
+    : `<h1 class="text-[28px] font-bold text-gray-900 tracking-tight mb-2">${pg.title}</h1>`;
+  const metaHtml = pg.meta
+    ? (isOverview
+        ? `<p class="text-[14px] text-gray-500 leading-relaxed mb-5 max-w-[580px]">${pg.meta}</p>`
+        : `<p class="text-sm text-gray-500 leading-relaxed mb-6">${pg.meta}</p>`)
+    : '';
   el.innerHTML = [
-    `<h1 class="text-[28px] font-bold text-gray-900 tracking-tight mb-2">${pg.title}</h1>`,
-    pg.meta ? `<p class="text-sm text-gray-500 leading-relaxed mb-6">${pg.meta}</p>` : '',
+    titleHtml,
+    metaHtml,
     `<hr class="border-t border-gray-200 mb-6">`,
     ...pg.blocks.map(renderBlock)
   ].join('');
@@ -1798,6 +1972,144 @@ function renderBlock(b) {
         <span class="flex-none w-6 h-6 rounded-full bg-[#4080E0] text-white text-xs font-bold flex items-center justify-center mt-0.5">${s.n}</span>
         <div><span class="text-sm font-semibold text-slate-800">${s.title}</span><span class="text-sm text-slate-500 ml-1.5">— ${s.desc}</span></div>
       </li>`).join('')}</ol>`;
+  }
+
+  if (b.type === 'onboarding_flow') {
+    const cards = (d.steps||[]).map(s => {
+      const btns = (s.actions||[]).map(a => a.primary
+        ? `<a href="${a.href}" target="_blank"
+              class="flex items-center justify-between gap-2 w-full bg-[#2D74DE] hover:bg-[#2060c4]
+                     text-white text-[12.5px] font-semibold px-3.5 py-2.5 rounded-lg transition-colors no-underline">
+             <span>${a.label}</span>
+             <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+             </svg>
+           </a>`
+        : `<a href="${a.href}" target="_blank"
+              class="flex items-center justify-between gap-2 w-full bg-white hover:bg-slate-50
+                     text-slate-600 text-[12.5px] font-medium px-3.5 py-2.5 rounded-lg
+                     border border-slate-200 transition-colors no-underline">
+             <span>${a.label}</span>
+             <svg class="w-3.5 h-3.5 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+             </svg>
+           </a>`
+      ).join('');
+
+      return `
+        <div class="flex-1 min-w-0 bg-white border border-slate-200 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-5 h-5 rounded-full bg-[#2D74DE] text-white text-[10px] font-bold flex items-center justify-center shrink-0">${s.n}</span>
+            <span class="text-[12px] font-semibold text-slate-700">${s.title}</span>
+          </div>
+          ${s.desc ? `<p class="text-[11.5px] text-slate-400 leading-relaxed mb-3 mt-0">${s.desc}</p>` : ''}
+          <div class="flex flex-col gap-2">${btns}</div>
+        </div>`;
+    }).join(`
+        <div class="hidden lg:flex items-center justify-center w-5 shrink-0">
+          <svg class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+          </svg>
+        </div>`);
+
+    return `<div class="flex flex-col lg:flex-row lg:items-stretch gap-3 my-5">${cards}</div>`;
+  }
+
+  if (b.type === 'overview_hero') {
+    const pills = (d.features||[]).map(f=>`
+      <span class="inline-flex items-center gap-1.5 text-[12px] text-slate-600 bg-white border border-slate-200 rounded-full px-3 py-1">
+        <svg class="w-3 h-3 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        ${f}
+      </span>`).join('');
+    const btns = (d.actions||[]).map(a => a.primary
+      ? `<a href="${a.href}" target="_blank"
+            class="inline-flex items-center gap-2 bg-[#2D74DE] hover:bg-[#2060c4] text-white
+                   text-[13.5px] font-semibold px-5 py-2.5 rounded-xl transition-colors no-underline shadow-sm">
+           ${a.label}
+           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+         </a>`
+      : `<a href="${a.href}" target="_blank"
+            class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700
+                   text-[13.5px] font-medium px-5 py-2.5 rounded-xl border border-slate-200 transition-colors no-underline">
+           ${a.label}
+           <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+         </a>`
+    ).join('');
+    return `
+      <div class="rounded-2xl bg-gradient-to-br from-[#f0f6ff] via-white to-slate-50 border border-blue-100 px-7 py-8 mb-6 -mx-2">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-[#2D74DE] bg-blue-50 border border-blue-200 rounded-full px-2.5 py-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#2D74DE]"></span>
+            API ${d.badge||'v1'}
+          </span>
+          <span class="text-[11px] text-slate-400 font-mono">${d.baseUrl||''}</span>
+        </div>
+        <h2 class="text-[22px] font-bold text-slate-900 mb-2 tracking-tight">Start building eSignature integrations</h2>
+        <p class="text-[13.5px] text-slate-500 leading-relaxed mb-5 max-w-[520px]">
+          The AiSign REST API lets you embed document signing into any application.
+          Upload documents, assign recipients, place signature fields, and track completion — all via HTTP.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-6">${pills}</div>
+        <div class="flex flex-wrap gap-3">${btns}</div>
+      </div>`;
+  }
+
+  if (b.type === 'feature_cards') {
+    const ICONS = {
+      key:      `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>`,
+      template: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>`,
+      doc:      `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>`,
+      webhook:  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>`,
+      token:    `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>`,
+      log:      `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>`,
+    };
+    const cards = (d.items||[]).map(it => `
+      <div onclick="navTo('${it.navKey}')"
+           class="group bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer
+                  hover:border-[#4080E0] hover:shadow-md transition-all duration-200">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4
+                    text-[#4080E0] group-hover:bg-[#4080E0] group-hover:text-white transition-all duration-200">
+          ${ICONS[it.icon]||ICONS.doc}
+        </div>
+        <h3 class="text-[14.5px] font-bold text-slate-900 mb-1.5">${it.label}</h3>
+        <p class="text-[12.5px] text-slate-500 leading-relaxed m-0">${it.desc}</p>
+        <div class="mt-4 flex items-center gap-1 text-[12px] font-semibold text-[#4080E0] opacity-0 group-hover:opacity-100 transition-opacity">
+          View docs
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </div>
+      </div>`).join('');
+    return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 my-5">${cards}</div>`;
+  }
+
+  if (b.type === 'explore_grid') {
+    const ICONS = {
+      auth:       `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>`,
+      quickstart: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>`,
+      template:   `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>`,
+      upload:     `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>`,
+      webhook:    `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>`,
+      error:      `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>`,
+      status:     `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>`,
+      limits:     `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>`,
+      download:   `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>`,
+    };
+    const items = (d.items||[]).map(it => `
+      <div onclick="navTo('${it.navKey}')"
+           class="group flex gap-3 items-start p-4 rounded-xl border border-slate-100
+                  hover:border-[#4080E0] hover:bg-blue-50/30 cursor-pointer transition-all duration-150">
+        <div class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 mt-0.5
+                    text-slate-500 group-hover:bg-[#4080E0] group-hover:text-white transition-all duration-150">
+          ${ICONS[it.icon]||ICONS.auth}
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 mb-0.5">
+            <span class="text-[13px] font-semibold text-slate-800 group-hover:text-[#2D74DE] transition-colors">${it.label}</span>
+            <svg class="w-3 h-3 text-slate-300 group-hover:text-[#4080E0] transition-colors opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </div>
+          <p class="text-[12px] text-slate-500 leading-relaxed m-0">${it.desc}</p>
+        </div>
+      </div>`).join('');
+    return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 my-4">${items}</div>`;
   }
 
   if (b.type === 'feature_list') {
@@ -2067,22 +2379,23 @@ function _flashCopied(btn) {
 // INIT
 // ─────────────────────────────────────────────────
 renderSidebar();
-renderPage(currentPage);
-document.getElementById('breadcrumb-text').textContent = 'Introduction / Getting Started / Overview';
+// Use navigate() for the initial load so the active button is highlighted from the start
+navigate(currentPage);
 window.addEventListener('load', () => { if (window.Prism) Prism.highlightAll(); });
 
 // Sidebar stops before footer
 (function () {
   const sidebar = document.querySelector('aside');
   const footer  = document.querySelector('footer');
-  if (!sidebar || !footer) return;
+  const mainEl  = document.getElementById('main-content');
+  if (!sidebar || !footer || !mainEl) return;
   function updateSidebarBottom() {
     const footerTop = footer.getBoundingClientRect().top;
     sidebar.style.bottom = footerTop < window.innerHeight
       ? (window.innerHeight - footerTop) + 'px'
       : '0px';
   }
-  window.addEventListener('scroll', updateSidebarBottom, { passive: true });
+  mainEl.addEventListener('scroll', updateSidebarBottom, { passive: true });
   window.addEventListener('resize', updateSidebarBottom, { passive: true });
   updateSidebarBottom();
 }());
