@@ -1,12 +1,12 @@
 {{-- documentation-footer.blade.php --}}
 <footer class="w-full bg-[#1A1A1A] border-t border-white/10">
-    <div class="max-w-[88rem] mx-auto px-6 py-12">
+    <div class="max-w-[100rem] mx-auto px-4 py-12">
         <div class="flex flex-col lg:flex-row gap-10 lg:gap-10 xl:gap-14">
 
             {{-- Brand Column --}}
-            <div class="flex flex-col gap-4 lg:w-44 shrink-0">
+            <div class="flex flex-col gap-4 lg:w-40 shrink-0">
                 {{-- Logo --}}
-                <img class="w-36 h-16 pb-4 border-b-[#4E4E4E] border-b-2" src="/images/Logomark-NEG-WHITE.png" alt="">
+                <img class="w-32 h-16 pb-4 border-b-[#4E4E4E] border-b-2" src="/images/Logomark-NEG-WHITE.png" alt="">
 
                 {{-- Certification Label --}}
                 <div class="mt-2">
@@ -16,7 +16,7 @@
         </div>
 
             {{-- Nav Columns Wrapper --}}
-            <div class="flex flex-1 min-w-0 justify-between gap-4 xl:gap-8 pt-4 border-t-2 border-t-[#404040] lg:border-t-0 lg:pt-0 ">
+            <div class="flex flex-1 min-w-0 justify-between gap-4  pt-4 border-t-2 border-t-[#404040] lg:border-t-0 lg:pt-0 ">
 
                 {{-- Website Column --}}
                 <div class="min-w-[100px]">

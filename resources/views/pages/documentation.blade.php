@@ -45,26 +45,82 @@
 
   pre[class*="language-"] { margin: 0 !important; border: none !important; border-radius: 0 !important; background: #f8fafc !important; }
   code[class*="language-"] { font-family: 'Fira Code', monospace !important; font-size: 12.5px !important; }
+
+  /* ── Image hover-lift (translate offset + hard black shadow) ── */
+  .img-lift-wrap {
+    position: relative;
+    display: block;
+  }
+  .img-lift-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #000;
+    border-radius: inherit;
+    z-index: 0;
+    opacity: 0;
+    transform: translate(0, 0);
+    transition: opacity 0.18s ease;
+    pointer-events: none;
+  }
+  .img-lift-wrap:hover::after { opacity: 1; }
+  .img-lift-inner {
+    position: relative;
+    z-index: 1;
+    transform: translate(0, 0);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    border-radius: inherit;
+    overflow: hidden;
+  }
+  .img-lift-wrap:hover .img-lift-inner {
+    transform: translate(-4px, -4px);
+    box-shadow: 6px 6px 0 0 rgba(0,0,0,0.88);
+  }
+
+  /* ── Card hover lift (for feature cards) ── */
+  .card-lift {
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+  }
+  .card-lift:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 5px 5px 0 0 rgba(0,0,0,0.75);
+  }
+
+  /* ── Responsive doc content ── */
+  #doc-content { width: 100%; }
+  @media (max-width: 640px) {
+    #doc-content { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .grid-cols-resp-3 { grid-template-columns: 1fr !important; }
+  }
+  @media (max-width: 900px) {
+    .hero-two-col { flex-direction: column !important; }
+    .hero-img-col { width: 100% !important; }
+  }
 </style>
 </head>
 <body class="font-sans bg-slate-50 text-slate-800 antialiased">
 
 @include('partials.documentation-header')
-@include('partials.documentation-sidebar')
 
-<div class="ml-[288px] mt-16 flex flex-col h-[calc(100vh-64px)]">
+
+<div class="mt-16 flex flex-col h-[calc(100vh-64px)]">
+  @include('partials.documentation-sidebar')
   <main id="main-content" class="flex-1 flex flex-col overflow-y-auto">
-    <div class="bg-blue-50 border-b border-blue-100 px-10 py-6 flex items-center gap-1.5 text-[13px] text-slate-500">
-      <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/>
-      </svg>
-      <span id="breadcrumb-text" class="text-slate-600 font-medium"></span>
+    <div class="md:ml-[288px] flex flex-col flex-1">
+      <div class="bg-blue-50 border-b border-blue-100 px-6 sm:px-10 lg:px-14 py-3.5 flex items-center gap-1.5 text-[13px] text-slate-500">
+        <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/>
+        </svg>
+        <span id="breadcrumb-text" class="text-slate-600 font-medium"></span>
+      </div>
+      <div id="doc-content" class="px-24 py-10 max-w-[860px]"></div>
+      @include('partials.documentation-footer')
     </div>
-    <div id="doc-content" class="px-24 py-10 max-w-[860px]"></div>
   </main>
 </div>
 
-@include('partials.documentation-footer')
+
 
 <script>
 // ─────────────────────────────────────────────────
@@ -137,67 +193,38 @@ const PAGES = {
 
       { type:'note', data:{ variant:'warning', content:'The API is currently in the development phase and is only available via <strong>HTTP</strong>. HTTPS is required for all production environments.' }},
 
-      { type:'section_header', data:{ title:'Get Your API Access', anchor:'get-started', level:2 }},
-      { type:'text', data:{ content:'Three steps to start making API calls:' }},
-      { type:'onboarding_flow', data:{ steps:[
-        {
-          n: 1,
-          title: 'Choose a Plan',
-          desc: 'Pick a subscription that fits your volume. Start for free with 100 tokens.',
-          actions: [
-            { label: 'Start Free Trial', href: 'https://dev4.aisign.ai/plan/api-access/onboarding/form/free-trial', primary: true  },
-            { label: 'View All Plans',   href: 'https://dev4.aisign.ai/plan/api-access/onboarding/index',           primary: false },
-          ]
-        },
-        {
-          n: 2,
-          title: 'Manage Your Plan',
-          desc: 'View usage, upgrade, or change your current API subscription.',
-          actions: [
-            { label: 'My Plan', href: 'https://dev4.aisign.ai/plan/api-access/index', primary: true },
-          ]
-        },
-        {
-          n: 3,
-          title: 'Get Your API Key',
-          desc: 'Generate and manage your secret API keys from the dashboard.',
-          actions: [
-            { label: 'API Dashboard', href: 'https://dev4.aisign.ai/api-keys', primary: true },
-          ]
-        },
-      ]}},
 
       { type:'section_header', data:{ title:'What You Can Build', anchor:'what', level:2 }},
       { type:'text', data:{ content:'The AiSign API covers the complete document signing lifecycle — from upload to signed PDF download.' }},
       { type:'feature_cards', data:{ items:[
         {
           icon: 'key',
-          label: 'Authentication',
-          desc: 'Secure every request with a private API key. Supports Authorization header, X-API-Key, and query parameter methods.',
+          label: 'API Reference',
+          desc: 'Secure every request with a private API key. Get technical details about API requests, parameters, code examples, and possible errors.',
           navKey: 'authentication/api-keys',
         },
         {
           icon: 'template',
           label: 'Templates',
-          desc: 'Reuse pre-built signing templates. Send a document for signatures with a single API call.',
+          desc: 'Reuse pre-built signing templates. Send a document for signatures with a single API call — fastest path to a signed document.',
           navKey: 'templates/list-templates',
         },
         {
           icon: 'doc',
           label: 'Documents',
-          desc: 'Upload PDFs, assign recipients, place fields, activate for signing, and download the completed file.',
+          desc: 'Upload PDFs, assign recipients, place fields, activate for signing, and download the completed file — full control over every step.',
           navKey: 'documents/upload',
         },
         {
           icon: 'webhook',
           label: 'Webhooks',
-          desc: 'Subscribe to real-time events like document.completed or field.signed and react instantly in your app.',
+          desc: 'Subscribe to real-time events like <code class="font-mono text-xs">document.completed</code> or <code class="font-mono text-xs">field.signed</code> and react instantly in your app.',
           navKey: 'webhooks/overview',
         },
         {
           icon: 'token',
           label: 'Tokens',
-          desc: 'Monitor your token balance at any time. Each document activation consumes exactly 1 token.',
+          desc: 'Monitor your token balance at any time. Each document activation consumes exactly 1 token — no hidden charges.',
           navKey: 'tokens/balance',
         },
         {
@@ -208,7 +235,7 @@ const PAGES = {
         },
       ]}},
 
-      { type:'section_header', data:{ title:'Explore the API', anchor:'explore', level:2 }},
+      { type:'section_header', data:{ title:'Explore the AiSign API', anchor:'explore', level:2 }},
       { type:'text', data:{ content:'Jump directly to the topic you need:' }},
       { type:'explore_grid', data:{ items:[
         {
@@ -268,7 +295,7 @@ const PAGES = {
       ]}},
 
       { type:'section_header', data:{ title:'Response Format', anchor:'response-format', level:2 }},
-      { type:'text', data:{ content:'Every endpoint returns a consistent JSON envelope with a <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">success</code> flag, a human-readable <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">message</code>, a <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">data</code> payload, and an <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">errors</code> object on failure.' }},
+      { type:'text', data:{ content:'Every endpoint returns a consistent JSON envelope with a <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">success</code> flag, a human-readable <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">message</code>, a <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">data</code> payload, and an <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">errors</code> object on failure.' }},
       { type:'code', data:{ language:'json', label:'Standard Response Envelope', content:`{
   "success": true,
   "message": "Descriptive message",
@@ -291,15 +318,49 @@ const PAGES = {
 
   'introduction/quick-start': {
     title: 'Quick Start Guide',
-    meta: 'Get a document signed in minutes using the two main workflows available in the AiSign API.',
+    meta: 'Get a document signed in minutes using the AiSign API.',
     blocks: [
+      /* ── Intro ── */
+      { type:'qs_hero', data:{
+          title: 'Get started with the AiSign API',
+          desc: 'This quickstart guide walks you through obtaining your API key and sending your first signing request — two complete workflows with cURL examples.',
+      }},
+
+      /* ── Setup Step 1 ── */
+      { type:'qs_setup_step', data:{
+          title: 'Choose a plan',
+          content: 'Start with a free trial (100 tokens, no credit card required) or pick a paid plan that fits your signing volume. Each document activation consumes exactly 1 token.',
+          note: 'Uploading documents, adding recipients, and placing fields do not consume tokens — only the final activation step does.',
+          image: '/images/api-plan-section.png',
+      }},
+
+      /* ── Setup Step 2 ── */
+      { type:'qs_setup_step', data:{
+          title: 'Get your API key',
+          content: 'Once your account is active, open the API dashboard. Your API key is generated automatically. Copy it from the <strong>API Keys</strong> tab — you\'ll pass it in every request as a <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">Bearer</code> token.',
+          image: '/images/api-dashboard.jpeg',
+      }},
+
+      /* ── Calling the API ── */
+      { type:'qs_api_step', data:{
+          title: 'Calling the API',
+          content: 'There are two main ways to call the AiSign API:',
+          bullets: [
+            'Copy the cURL examples below to send requests from your terminal or an HTTP client like Postman.',
+            'Integrate the code samples into your application using any language that can make HTTP requests.',
+          ],
+      }},
+
+      { type:'note', data:{ variant:'info', content:'Documents signed in development/trial mode will have a watermark. Upgrade to a paid plan to remove it.' }},
+
+      /* ── Workflow A ── */
       { type:'section_header', data:{ title:'Workflow A — Use a Template (Fastest)', anchor:'workflow-a', level:2 }},
       { type:'text', data:{ content:'If you already have signing templates created in the AiSign dashboard, this is the fastest path to getting a document signed. Just one API call does the heavy lifting.' }},
       { type:'steps', data:{ steps:[
-        { n:1, title:'List your templates',      desc:'Call <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">GET /templates</code> to see available templates and how many placeholders each one has.' },
-        { n:2, title:'Use the template',         desc:'Call <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">POST /templates/{id}/use</code> with a matching number of recipients. This creates the document, generates signing URLs, and consumes 1 token.' },
-        { n:3, title:'Share signing URLs',       desc:'Each recipient in the response receives a unique <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">signing_url</code>. Embed it in an iframe or email it directly.' },
-        { n:4, title:'Track completion',         desc:'Poll <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">GET /documents/{id}/status</code> or register a <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">document.completed</code> webhook.' },
+        { n:1, title:'List your templates',      desc:'Call <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">GET /templates</code> to see available templates and how many placeholders each one has.' },
+        { n:2, title:'Use the template',         desc:'Call <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">POST /templates/{id}/use</code> with a matching number of recipients. This creates the document, generates signing URLs, and consumes 1 token.' },
+        { n:3, title:'Share signing URLs',       desc:'Each recipient in the response receives a unique <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">signing_url</code>. Embed it in an iframe or email it directly.' },
+        { n:4, title:'Track completion',         desc:'Poll <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">GET /documents/{id}/status</code> or register a <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">document.completed</code> webhook.' },
       ]}},
       { type:'code', data:{ language:'bash', label:'Minimal Template Example', content:`# Step 1: Find a template
 curl -X GET https://dev1.aisign.ai/api/v1/templates \\
@@ -317,16 +378,78 @@ curl -X POST https://dev1.aisign.ai/api/v1/templates/2794/use \\
     ],
     "include_iframe": true
   }'`}},
+
+      /* ── Workflow B ── */
       { type:'section_header', data:{ title:'Workflow B — Upload Your Own Document', anchor:'workflow-b', level:2 }},
       { type:'text', data:{ content:'Use this workflow when you need full control over the document, recipients, and field placement.' }},
-      { type:'steps', data:{ steps:[
-        { n:1, title:'Upload the document',  desc:'<code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">POST /documents/upload</code> — Accepts PDF, DOC, or DOCX up to 10 MB. Returns a <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">document_id</code>. Does <strong>not</strong> consume a token.' },
-        { n:2, title:'Add recipients',       desc:'<code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">POST /documents/{id}/recipients</code> — Assign signers, approvers, viewers, or CC. Does <strong>not</strong> consume a token.' },
-        { n:3, title:'Place fields',         desc:'<code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">POST /documents/{id}/fields</code> — Add SIGNATURE, DATE, TEXT, and other fields using absolute (x/y) or OCR positioning. Does <strong>not</strong> consume a token.' },
-        { n:4, title:'Activate the document',desc:'<code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">POST /documents/{id}/use</code> — Locks the document, generates signing URLs. <strong>Consumes 1 token.</strong>' },
-        { n:5, title:'Download when done',   desc:'<code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">GET /documents/{uuid}/download</code> — Retrieve the fully signed PDF once all recipients have completed.' },
-      ]}},
+
+      /* Step 1 - Upload */
+      { type:'qs_api_step', data:{
+          title: 'Step 1. Upload a document',
+          content: 'Upload a PDF, DOC, or DOCX file up to 10 MB using the Upload Document request.',
+          bullets: [
+            'Paste your <strong>API key</strong> into the <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">Authorization</code> header after <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">Bearer</code>.',
+            'The response returns a <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">document_id</code> — copy it for the next step.',
+          ],
+          codeLabel: 'POST /documents/upload — cURL',
+          code: `curl -X POST https://dev1.aisign.ai/api/v1/documents/upload \\
+  -H "Authorization: Bearer sk_your_api_key" \\
+  -F "file=@/path/to/document.pdf"`,
+      }},
+
+      /* Step 2 - Add fields */
+      { type:'qs_api_step', data:{
+          title: 'Step 2. Add recipients & fields',
+          content: 'Assign signers, then place signature and text fields on the document pages.',
+          bullets: [
+            'Use <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">POST /documents/{id}/recipients</code> to add signers, approvers, or viewers.',
+            'Use <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">POST /documents/{id}/fields</code> to place signature, date, and text fields.',
+            'Paste the <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">document_id</code> from Step 1 into the URL.',
+          ],
+          codeLabel: 'POST /documents/{id}/fields — cURL',
+          code: `curl -X POST https://dev1.aisign.ai/api/v1/documents/1234/fields \\
+  -H "Authorization: Bearer sk_your_api_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "fields": [
+      {
+        "type": "SIGNATURE",
+        "recipient_index": 1,
+        "page_number": 1,
+        "x": 10, "y": 70,
+        "width": 25, "height": 8
+      }
+    ]
+  }'`,
+      }},
+
+      /* Step 3 - Activate */
+      { type:'qs_api_step', data:{
+          title: 'Step 3. Activate the document',
+          content: 'Activate the document to lock it, generate signing URLs for each recipient, and consume 1 API token.',
+          bullets: [
+            'Paste your <strong>API key</strong> and the <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">document_id</code> from Step 1.',
+            'The response includes a unique <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">signing_url</code> per recipient.',
+          ],
+          codeLabel: 'POST /documents/{id}/use — cURL',
+          code: `curl -X POST https://dev1.aisign.ai/api/v1/documents/1234/use \\
+  -H "Authorization: Bearer sk_your_api_key"`,
+      }},
+
       { type:'token_note', data:{ content:'Only the final activation step (POST /documents/{id}/use or POST /templates/{id}/use) consumes a token. Uploading, adding recipients, and adding fields are all free.' }},
+
+      /* ── Explore advanced workflows ── */
+      { type:'qs_explore', data:{ links:[
+        { label:'Embedded signing',  navKey:'documents/activate',      desc:'Build a seamless signing experience directly within your website using the signing URL in an iframe.' },
+        { label:'Webhooks',          navKey:'webhooks/register-webhook', desc:'Receive real-time event notifications for document completion, field signing, and more.' },
+        { label:'Error handling',    navKey:'error-handling/errors',    desc:'Full list of HTTP status codes, error shapes, and how to handle them gracefully.' },
+        { label:'Document lifecycle',navKey:'status-lifecycle/lifecycle',desc:'Understand UPLOADED → PREPARED → PENDING → COMPLETED state transitions.' },
+      ]}},
+
+      /* ── Go live ── */
+      { type:'qs_go_live', data:{
+          content: 'You can test eSignature workflows on the free trial plan as long as you need. When you are ready to launch in production, upgrade to a paid plan to remove watermarks and increase your token quota.',
+      }},
     ]
   },
 
@@ -338,7 +461,7 @@ curl -X POST https://dev1.aisign.ai/api/v1/templates/2794/use \\
     meta: 'All AiSign API requests require authentication via a private API key. Keys are prefixed with sk_ and carry scoped permissions.',
     blocks: [
       { type:'section_header', data:{ title:'Key Format', anchor:'format', level:2 }},
-      { type:'text', data:{ content:'Private API keys always begin with the prefix <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">sk_</code>. Keep your key secret — treat it like a password.' }},
+      { type:'text', data:{ content:'Private API keys always begin with the prefix <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">sk_</code>. Keep your key secret — treat it like a password.' }},
       { type:'section_header', data:{ title:'Authentication Methods', anchor:'methods', level:2 }},
       { type:'text', data:{ content:'You can authenticate using any of the three methods below. The Authorization header is recommended.' }},
       { type:'code', data:{ language:'bash', label:'Method 1 — Authorization Header (Recommended)', content:`curl -X GET https://dev1.aisign.ai/api/v1/templates \\
@@ -518,7 +641,7 @@ curl -X POST https://dev1.aisign.ai/api/v1/templates/2794/use \\
   }
 }`}},
       { type:'section_header', data:{ title:'Embedding the Signing Ceremony', anchor:'iframe', level:2 }},
-      { type:'text', data:{ content:'When <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">include_iframe: true</code> is sent, each recipient includes a ready-to-use <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">iframe_code</code> string. You can also build the iframe manually from the <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">signing_url</code>:' }},
+      { type:'text', data:{ content:'When <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">include_iframe: true</code> is sent, each recipient includes a ready-to-use <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">iframe_code</code> string. You can also build the iframe manually from the <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">signing_url</code>:' }},
       { type:'code', data:{ language:'javascript', label:'JavaScript — Embed signing iframe', content:`fetch('https://dev1.aisign.ai/api/v1/templates/2794/use', {
   method: 'POST',
   headers: {
@@ -564,7 +687,7 @@ curl -X POST https://dev1.aisign.ai/api/v1/templates/2794/use \\
       { type:'endpoint', data:{ method:'POST', url:'/documents/upload', permission:'documents:write', consumesToken:false, description:'Uploads a document and places it in UPLOADED status. The document is a draft until recipients, fields, and activation are completed.' }},
       { type:'note', data:{ variant:'success', content:'This endpoint does <strong>not</strong> consume an API token. Only the final activation step does.' }},
       { type:'section_header', data:{ title:'Body Parameters', anchor:'body', level:2 }},
-      { type:'text', data:{ content:'The request must be sent as <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">multipart/form-data</code>.' }},
+      { type:'text', data:{ content:'The request must be sent as <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">multipart/form-data</code>.' }},
       { type:'param_table', data:{ location:'Body (multipart/form-data)', params:[
         { name:'file',    type:'file',   required:true,  description:'The document to upload. Accepted formats: PDF, DOC, DOCX. Maximum size: 10 MB.' },
         { name:'title',   type:'string', required:true,  description:'Document title shown to recipients and in the dashboard. Max 512 characters.' },
@@ -687,7 +810,7 @@ curl -X POST https://dev1.aisign.ai/api/v1/templates/2794/use \\
     }]
   }'`}},
       { type:'section_header', data:{ title:'Mode 2 — OCR Relative Positioning', anchor:'ocr', level:2 }},
-      { type:'text', data:{ content:'The OCR engine scans the entire document for a reference word or phrase and places the field relative to where it is found. The <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">page</code> parameter is ignored — the field lands on whichever page the reference text appears.' }},
+      { type:'text', data:{ content:'The OCR engine scans the entire document for a reference word or phrase and places the field relative to where it is found. The <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">page</code> parameter is ignored — the field lands on whichever page the reference text appears.' }},
       { type:'param_table', data:{ location:'OCR Positioning', params:[
         { name:'reference_text',       type:'string',  required:true,  description:'Word or phrase to locate in the document. Case-insensitive. Punctuation is ignored. Max 255 characters.' },
         { name:'reference_occurrence', type:'integer', required:false, description:'Which occurrence to use (1-indexed). Use -1 to place a field at every occurrence.', default:'1' },
@@ -1126,7 +1249,7 @@ curl -X POST https://dev1.aisign.ai/api/v1/templates/2794/use \\
       { type:'code', data:{ language:'bash', label:'Response Headers (200 OK)', content:`Content-Type: application/pdf
 Content-Disposition: attachment; filename="Employment_Contract.pdf"
 Content-Length: 245632`}},
-      { type:'text', data:{ content:'The response body is the raw binary PDF data. Use <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">--output</code> (curl) or save the response buffer in your language of choice.' }},
+      { type:'text', data:{ content:'The response body is the raw binary PDF data. Use <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">--output</code> (curl) or save the response buffer in your language of choice.' }},
       { type:'section_header', data:{ title:'Error Responses', anchor:'errors', level:2 }},
       { type:'response', data:{ status:400, label:'Document Not Completed', content:`{
   "success": false,
@@ -1247,7 +1370,7 @@ Content-Length: 245632`}},
     meta: 'Webhooks deliver real-time event notifications to your server when specific actions occur — no polling required. Each event type carries its own secret for signature verification.',
     blocks: [
       { type:'section_header', data:{ title:'How Webhooks Work', anchor:'how', level:2 }},
-      { type:'text', data:{ content:'When an event occurs, AiSign sends an HTTP POST request to your registered endpoint. Your server must respond with <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">200 OK</code> within <strong>10 seconds</strong>. Do all heavy processing <strong>after</strong> returning the response.' }},
+      { type:'text', data:{ content:'When an event occurs, AiSign sends an HTTP POST request to your registered endpoint. Your server must respond with <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">200 OK</code> within <strong>10 seconds</strong>. Do all heavy processing <strong>after</strong> returning the response.' }},
       { type:'note', data:{ variant:'warning', content:'Webhooks only fire for documents created via the API (<code class="font-mono">is_from_api = true</code>). Documents created through the web dashboard do not trigger webhook events.' }},
 
       { type:'section_header', data:{ title:'Available Events', anchor:'events', level:2 }},
@@ -1262,7 +1385,7 @@ Content-Length: 245632`}},
       ]}},
 
       { type:'section_header', data:{ title:'Payload Structure', anchor:'payload', level:2 }},
-      { type:'text', data:{ content:'Every event uses the same envelope. The <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">type</code> field tells you which event fired; <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">id</code> is a unique delivery ID you can use for idempotency.' }},
+      { type:'text', data:{ content:'Every event uses the same envelope. The <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">type</code> field tells you which event fired; <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">id</code> is a unique delivery ID you can use for idempotency.' }},
       { type:'code', data:{ language:'json', label:'Envelope', content:`{
   "id":          "evt_abc123...",
   "type":        "document.completed",
@@ -1282,7 +1405,7 @@ WEBHOOK_SECRETdocument.activated=whsec_jkl...
 WEBHOOK_SECRETdocument.viewed=whsec_mno...
 WEBHOOK_SECRETfield.signed=whsec_pqr...
 WEBHOOK_SECRETdocument.completed=whsec_stu...`}},
-      { type:'text', data:{ content:'Then at runtime, resolve the right secret by reading <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">event.type</code> from the payload before calling the verification function:' }},
+      { type:'text', data:{ content:'Then at runtime, resolve the right secret by reading <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">event.type</code> from the payload before calling the verification function:' }},
       { type:'code', data:{ language:'python', label:'Python — resolve secret by event type', content:`import os
 from dotenv import load_dotenv
 
@@ -1293,12 +1416,12 @@ def get_webhook_secret(event_type: str) -> str:
     return os.getenv("WEBHOOK_SECRET" + event_type)   # e.g. "WEBHOOK_SECRETdocument.completed"`}},
 
       { type:'section_header', data:{ title:'HMAC Signature Verification', anchor:'security', level:2 }},
-      { type:'text', data:{ content:'Every POST includes an <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">X-Webhook-Signature</code> header — an HMAC-SHA256 hex digest of the <strong>raw request body bytes</strong>. Always verify before processing.' }},
+      { type:'text', data:{ content:'Every POST includes an <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">X-Webhook-Signature</code> header — an HMAC-SHA256 hex digest of the <strong>raw request body bytes</strong>. Always verify before processing.' }},
       { type:'steps', data:{ steps:[
-        { n:1, title:'Read the signature header', desc:'Extract <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">X-Webhook-Signature</code> from the request.' },
-        { n:2, title:'Parse event type',          desc:'Decode the JSON body and read <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">type</code> to look up the correct per-event secret.' },
+        { n:1, title:'Read the signature header', desc:'Extract <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">X-Webhook-Signature</code> from the request.' },
+        { n:2, title:'Parse event type',          desc:'Decode the JSON body and read <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">type</code> to look up the correct per-event secret.' },
         { n:3, title:'Compute HMAC-SHA256',        desc:'Hash the <strong>raw body bytes</strong> (not the parsed JSON) with the secret using HMAC-SHA256.' },
-        { n:4, title:'Timing-safe compare',        desc:'Use a constant-time comparison to check the computed digest against the header value. Never use <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">==</code>.' },
+        { n:4, title:'Timing-safe compare',        desc:'Use a constant-time comparison to check the computed digest against the header value. Never use <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">==</code>.' },
       ]}},
       { type:'note', data:{ variant:'danger', content:'Always use the <strong>raw request body bytes</strong> for hashing — not a re-serialised version of the parsed JSON. Byte order and whitespace must be identical to what AiSign sent.' }},
 
@@ -1352,7 +1475,7 @@ function verifyWebhookSignature(rawBody, signature, secret) {
 }`}},
 
       { type:'section_header', data:{ title:'Full Server Example (Python / Flask)', anchor:'server', level:2 }},
-      { type:'text', data:{ content:'The pattern below mirrors a production setup: verify first, respond <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">200 OK</code> immediately, then dispatch the event asynchronously so slow processing never times out the delivery.' }},
+      { type:'text', data:{ content:'The pattern below mirrors a production setup: verify first, respond <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">200 OK</code> immediately, then dispatch the event asynchronously so slow processing never times out the delivery.' }},
       { type:'code', data:{ language:'python', label:'Python — Flask webhook server', content:`from flask import Flask, request
 import json, hmac, hashlib, os, asyncio
 from enum import Enum
@@ -1436,7 +1559,7 @@ if __name__ == '__main__':
     app.run(port=5000)`}},
 
       { type:'section_header', data:{ title:'Handling document.completed', anchor:'completed', level:2 }},
-      { type:'text', data:{ content:'The <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">document.completed</code> event is the most important. Its payload includes a <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">download_url</code> pointing directly to the signed PDF — use it with your API key to download without constructing the URL manually.' }},
+      { type:'text', data:{ content:'The <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">document.completed</code> event is the most important. Its payload includes a <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">download_url</code> pointing directly to the signed PDF — use it with your API key to download without constructing the URL manually.' }},
       { type:'code', data:{ language:'json', label:'document.completed payload', content:`{
   "id":          "evt_C3dE4fG5hI6jK7lM8nO9",
   "type":        "document.completed",
@@ -1470,7 +1593,7 @@ def download_document(download_url: str, output_path: str):
       { type:'note', data:{ variant:'info', content:'The <code class="font-mono">download_url</code> in the webhook payload is the same as calling <code class="font-mono">GET /api/v1/documents/{uuid}/download</code> directly. Both require your API key in the Authorization header.' }},
 
       { type:'section_header', data:{ title:'Idempotency', anchor:'idempotency', level:2 }},
-      { type:'text', data:{ content:'AiSign may deliver the same event more than once (due to retries). Use the <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">id</code> field to deduplicate:' }},
+      { type:'text', data:{ content:'AiSign may deliver the same event more than once (due to retries). Use the <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">id</code> field to deduplicate:' }},
       { type:'code', data:{ language:'python', label:'Python — idempotency check', content:`processed_events = set()   # use a database in production
 
 async def handle_event(event_type: str, data: dict):
@@ -1548,7 +1671,7 @@ async def handle_event(event_type: str, data: dict):
     "url": ["The url must be a valid URL."]
   }
 }`}},
-      { type:'note', data:{ variant:'warning', content:'Webhook URLs <strong>must use HTTPS</strong>. HTTP URLs are rejected. Use a tool like <a href="https://ngrok.com" class="text-indigo-600 underline" target="_blank">ngrok</a> or <a href="https://webhook.site" class="text-indigo-600 underline" target="_blank">webhook.site</a> for local development.' }},
+      { type:'note', data:{ variant:'warning', content:'Webhook URLs <strong>must use HTTPS</strong>. HTTP URLs are rejected. Use a tool like <a href="https://ngrok.com" class="text-[#3277DF] underline" target="_blank">ngrok</a> or <a href="https://webhook.site" class="text-[#3277DF] underline" target="_blank">webhook.site</a> for local development.' }},
     ]
   },
 
@@ -1692,7 +1815,7 @@ async def handle_event(event_type: str, data: dict):
         { code:'500', label:'Internal Server Error',  desc:'Unexpected server-side error. Contact support if this persists.' },
       ]}},
       { type:'section_header', data:{ title:'Error Codes', anchor:'codes', level:2 }},
-      { type:'text', data:{ content:'Many 422 responses include a machine-readable <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">error_code</code> field to help you handle errors programmatically:' }},
+      { type:'text', data:{ content:'Many 422 responses include a machine-readable <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">error_code</code> field to help you handle errors programmatically:' }},
       { type:'status_table', data:{ rows:[
         { code:'AMBIGUOUS_POSITIONING',   label:'Field has x/y AND reference_text', desc:'Remove either absolute coordinates or the OCR reference text from the field object.' },
         { code:'REFERENCE_WORD_NOT_FOUND',label:'OCR text not found in document',   desc:'Check for typos in reference_text, or use absolute positioning instead.' },
@@ -1793,7 +1916,7 @@ async def handle_event(event_type: str, data: dict):
         { code:'VOIDED',    label:'Cancelled',           desc:'Document was voided and can no longer be signed.' },
       ]}},
       { type:'section_header', data:{ title:'Workflow A — Template Path', anchor:'workflow-a', level:2 }},
-      { type:'text', data:{ content:'When using <code class="font-mono bg-slate-100 border border-slate-200 text-indigo-600 text-xs px-1 rounded">POST /templates/{id}/use</code>, the document immediately enters PENDING status — there is no intermediate UPLOADED or PREPARED stage.' }},
+      { type:'text', data:{ content:'When using <code class="font-mono bg-slate-100 border border-slate-200 text-[#3277DF] text-xs px-1 rounded">POST /templates/{id}/use</code>, the document immediately enters PENDING status — there is no intermediate UPLOADED or PREPARED stage.' }},
       { type:'code', data:{ language:'bash', label:'Template Path', content:`POST /templates/{id}/use
   └─► Document created directly as PENDING
        └─► Recipients complete signing
@@ -1919,31 +2042,35 @@ function renderPage(key) {
   const pg = PAGES[key];
   const el = document.getElementById('doc-content');
   const isOverview = key === 'introduction/overview';
-  if (isOverview) {
-    el.className = 'px-10 py-10 max-w-[920px]';
+  const isWide = isOverview || key === 'introduction/quick-start';
+  if (isWide) {
+    // Full bleed — no max-width cap; generous but responsive padding
+    el.className = 'w-full px-6 sm:px-10 lg:px-14 py-10';
   } else {
-    el.className = 'px-24 py-10 max-w-[860px]';
+    // Slightly narrower for dense API ref pages, but still wide
+    el.className = 'w-full px-6 sm:px-10 lg:px-14 py-10 max-w-5xl';
   }
   if (!pg) {
     const label = key.split('/').pop().replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
     el.innerHTML = `
-      <h1 class="text-[28px] font-bold text-gray-900 tracking-tight mb-6">${label}</h1>
+      <h1 class="text-[28px] font-bold text-[#FE9090] tracking-tight mb-6">${label}</h1>
       <hr class="border-t border-gray-200 mb-6">
       <p class="text-sm text-slate-400">Content coming soon.</p>`;
     return;
   }
-  const titleHtml = isOverview
-    ? `<h1 class="text-[30px] font-bold text-gray-900 tracking-tight mb-1">${pg.title}</h1>`
-    : `<h1 class="text-[28px] font-bold text-gray-900 tracking-tight mb-2">${pg.title}</h1>`;
+  const titleHtml = isWide
+    ? '' // wide pages use their own hero block heading
+    : `<h1 class="text-[28px] font-bold text-[#FE9090] tracking-tight mb-2">${pg.title}</h1>`;
   const metaHtml = pg.meta
-    ? (isOverview
-        ? `<p class="text-[14px] text-gray-500 leading-relaxed mb-5 max-w-[580px]">${pg.meta}</p>`
+    ? (isWide
+        ? '' // wide pages hero blocks contain their own description
         : `<p class="text-sm text-gray-500 leading-relaxed mb-6">${pg.meta}</p>`)
     : '';
+  const divider = isWide ? '' : `<hr class="border-t border-gray-200 mb-6">`;
   el.innerHTML = [
     titleHtml,
     metaHtml,
-    `<hr class="border-t border-gray-200 mb-6">`,
+    divider,
     ...pg.blocks.map(renderBlock)
   ].join('');
   if (window.Prism) Prism.highlightAll();
@@ -1953,7 +2080,7 @@ function renderPage(key) {
 // BLOCK RENDERERS
 // ─────────────────────────────────────────────────
 function renderBlock(b) {
-  const d = b.data;
+  const d = b.data
 
   if (b.type === 'text') return `
     <p class="text-sm text-gray-600 leading-[1.75] mb-3">${d.content}</p>`;
@@ -1962,15 +2089,15 @@ function renderBlock(b) {
     if (d.level === 3) return `
       <h3 id="${d.anchor}" class="text-sm font-semibold text-gray-800 mt-6 mb-2">${d.title}</h3>`;
     return `
-      <h2 id="${d.anchor}" class="text-base font-semibold text-gray-600 mt-8 mb-1.5">${d.title}</h2>
-      <hr class="border-t border-slate-100 mb-4">`;
+      <h2 id="${d.anchor}" class="text-[17px] font-bold text-[#2D74DE] mt-10 mb-2">${d.title}</h2>
+      <hr class="border-t border-slate-100 mb-5">`;
   }
 
   if (b.type === 'steps') {
-    return `<ol class="space-y-3 mb-5">${(d.steps||[]).map(s=>`
-      <li class="flex gap-3.5 items-start">
-        <span class="flex-none w-6 h-6 rounded-full bg-[#4080E0] text-white text-xs font-bold flex items-center justify-center mt-0.5">${s.n}</span>
-        <div><span class="text-sm font-semibold text-slate-800">${s.title}</span><span class="text-sm text-slate-500 ml-1.5">— ${s.desc}</span></div>
+    return `<ol class="space-y-4 mb-6">${(d.steps||[]).map(s=>`
+      <li class="flex gap-4 items-start">
+        <span class="flex-none w-7 h-7 rounded-full bg-[#4080E0] text-white text-xs font-bold flex items-center justify-center mt-0.5 shadow-sm">${s.n}</span>
+        <div class="pt-0.5"><span class="text-[14px] font-semibold text-slate-800">${s.title}</span><span class="text-[14px] text-slate-500 ml-1.5">— ${s.desc}</span></div>
       </li>`).join('')}</ol>`;
   }
 
@@ -2017,99 +2144,182 @@ function renderBlock(b) {
 
   if (b.type === 'overview_hero') {
     const pills = (d.features||[]).map(f=>`
-      <span class="inline-flex items-center gap-1.5 text-[12px] text-slate-600 bg-white border border-slate-200 rounded-full px-3 py-1">
+      <span class="inline-flex items-center gap-1.5 text-[12.5px] text-slate-600 bg-white border border-slate-200 rounded-full px-3.5 py-1.5 shadow-sm">
         <svg class="w-3 h-3 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
         ${f}
       </span>`).join('');
     const btns = (d.actions||[]).map(a => a.primary
       ? `<a href="${a.href}" target="_blank"
             class="inline-flex items-center gap-2 bg-[#2D74DE] hover:bg-[#2060c4] text-white
-                   text-[13.5px] font-semibold px-5 py-2.5 rounded-xl transition-colors no-underline shadow-sm">
+                   text-[15px] font-semibold px-7 py-3.5 rounded-xl transition-colors no-underline shadow-md">
            ${a.label}
-           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
          </a>`
       : `<a href="${a.href}" target="_blank"
             class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700
-                   text-[13.5px] font-medium px-5 py-2.5 rounded-xl border border-slate-200 transition-colors no-underline">
+                   text-[15px] font-medium px-7 py-3.5 rounded-xl border border-slate-200 transition-colors no-underline shadow-sm">
            ${a.label}
-           <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
          </a>`
     ).join('');
     return `
-      <div class="rounded-2xl bg-gradient-to-br from-[#f0f6ff] via-white to-slate-50 border border-blue-100 px-7 py-8 mb-6 -mx-2">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-[#2D74DE] bg-blue-50 border border-blue-200 rounded-full px-2.5 py-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#2D74DE]"></span>
-            API ${d.badge||'v1'}
-          </span>
-          <span class="text-[11px] text-slate-400 font-mono">${d.baseUrl||''}</span>
+      <div class="hero-two-col flex flex-col lg:flex-row items-center gap-10 lg:gap-16 py-8 mb-10">
+        <!-- Left: text content -->
+        <div class="flex-1 min-w-0">
+          <h2 class="text-[32px] sm:text-[36px] font-extrabold text-slate-900 mb-5 leading-tight tracking-tight">
+            Start building eSignature integrations
+          </h2>
+          <p class="text-[15.5px] text-slate-500 leading-relaxed mb-7">
+            The AiSign REST API empowers you to embed document signing into any application.
+            Upload documents, assign recipients, place signature fields, and track completion in real-time — all via HTTP.
+          </p>
+          <div class="flex flex-wrap gap-2.5 mb-8">${pills}</div>
+          <div class="flex flex-wrap gap-3">${btns}</div>
         </div>
-        <h2 class="text-[22px] font-bold text-slate-900 mb-2 tracking-tight">Start building eSignature integrations</h2>
-        <p class="text-[13.5px] text-slate-500 leading-relaxed mb-5 max-w-[520px]">
-          The AiSign REST API lets you embed document signing into any application.
-          Upload documents, assign recipients, place signature fields, and track completion — all via HTTP.
-        </p>
-        <div class="flex flex-wrap gap-2 mb-6">${pills}</div>
-        <div class="flex flex-wrap gap-3">${btns}</div>
+        <!-- Right: hero image with hover-lift effect -->
+        <div class="hero-img-col flex-shrink-0 w-full lg:w-[46%]">
+          <div class="img-lift-wrap rounded-2xl">
+            <div class="img-lift-inner rounded-2xl border border-slate-200 bg-slate-800 overflow-hidden shadow-xl" style="aspect-ratio:16/10;">
+              <img src="/images/homepage-photo-tablet-secure-otmz.png"
+                   alt="AiSign API preview"
+                   class="w-full h-full object-cover opacity-90"
+                   onerror="this.parentElement.style.background='#1e293b'">
+            </div>
+          </div>
+        </div>
       </div>`;
   }
 
   if (b.type === 'feature_cards') {
-    const ICONS = {
-      key:      `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>`,
-      template: `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>`,
-      doc:      `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>`,
-      webhook:  `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>`,
-      token:    `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>`,
-      log:      `<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>`,
+    /*
+     * ICON IMAGE MAP — each key maps to a unique image path from your /images/ directory.
+     * To use a custom image per card, add an `img` field to the item in the page data:
+     *   { icon:'key', label:'...', img:'/images/my-custom.png', ... }
+     * If `img` is omitted, the map below is used as a fallback per icon type.
+     */
+    const ICON_IMGS = {
+      key:      '/images/documentation-key-icon.png',
+      template: '/images/documentation-template-icon.png',
+      doc:      '/images/documentation-documents-icon.png',
+      webhook:  '/images/documentation-bell-icon.png',
+      token:    '/images/documentation-lock-icon.png',
+      log:      '/images/documentation-logs-icon.png',
     };
-    const cards = (d.items||[]).map(it => `
+    /* Gradient accent per category — matches your site's color palette */
+    const ICON_GRAD = {
+      key:      'linear-gradient(135deg,rgba(64,128,224,0.18) 0%,rgba(45,116,222,0.35) 100%)',
+      template: 'linear-gradient(135deg,rgba(124,58,237,0.18) 0%,rgba(109,40,217,0.35) 100%)',
+      doc:      'linear-gradient(135deg,rgba(14,165,233,0.18) 0%,rgba(2,132,199,0.35) 100%)',
+      webhook:  'linear-gradient(135deg,rgba(217,119,6,0.18) 0%,rgba(180,83,9,0.35) 100%)',
+      token:    'linear-gradient(135deg,rgba(5,150,105,0.18) 0%,rgba(4,120,87,0.35) 100%)',
+      log:      'linear-gradient(135deg,rgba(220,38,38,0.18) 0%,rgba(185,28,28,0.35) 100%)',
+    };
+    /* Fallback SVG paths per icon type */
+    const SVG_PATH = {
+      key:      'M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z',
+      template: 'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z',
+      doc:      'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
+      webhook:  'M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0',
+      token:    'M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125',
+      log:      'M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z',
+    };
+    const ICON_COLOR = { key:'#4080E0', template:'#7C3AED', doc:'#0EA5E9', webhook:'#D97706', token:'#059669', log:'#DC2626' };
+
+    const cards = (d.items||[]).map(it => {
+      const imgSrc  = it.img || ICON_IMGS[it.icon] || '';
+      const grad    = ICON_GRAD[it.icon] || ICON_GRAD.key;
+      const svgPath = SVG_PATH[it.icon] || SVG_PATH.doc;
+      const color   = ICON_COLOR[it.icon] || '#4080E0';
+      /* Icon element: image if path given (and real file exists), else SVG fallback */
+      const iconEl = `
+        <div class="w-14 h-14 rounded-2xl mb-5 flex items-center justify-center flex-shrink-0 border border-white/60 shadow-sm bg-[linear-gradient(239deg,rgba(255,144,144,0.08)_0%,rgba(134,125,201,0.08)_42%,rgba(45,116,222,0.08)_100%)]" >
+          <img src="${imgSrc}" alt="${it.label} icon"
+               class="w-12 h-12 object-contain"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        </div>`;
+      return `
       <div onclick="navTo('${it.navKey}')"
-           class="group bg-white border border-slate-200 rounded-2xl p-5 cursor-pointer
-                  hover:border-[#4080E0] hover:shadow-md transition-all duration-200">
-        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4
-                    text-[#4080E0] group-hover:bg-[#4080E0] group-hover:text-white transition-all duration-200">
-          ${ICONS[it.icon]||ICONS.doc}
+           class="card-lift group flex flex-col bg-white border border-slate-200 rounded-2xl p-6 cursor-pointer
+                  hover:border-[#4080E0] transition-all duration-200">
+        ${iconEl}
+        <h3 class="text-[15px] font-bold text-slate-900 mb-2 group-hover:text-[#2D74DE] transition-colors">${it.label}</h3>
+        <p class="text-[13px] text-slate-500 leading-relaxed flex-1 m-0">${it.desc}</p>
+        <div class="mt-5 flex items-center gap-1.5 text-[12.5px] font-semibold text-[#4080E0] opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+          Explore docs
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
         </div>
-        <h3 class="text-[14.5px] font-bold text-slate-900 mb-1.5">${it.label}</h3>
-        <p class="text-[12.5px] text-slate-500 leading-relaxed m-0">${it.desc}</p>
-        <div class="mt-4 flex items-center gap-1 text-[12px] font-semibold text-[#4080E0] opacity-0 group-hover:opacity-100 transition-opacity">
-          View docs
-          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-        </div>
-      </div>`).join('');
-    return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 my-5">${cards}</div>`;
+      </div>`;
+    }).join('');
+    return `<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 my-6">${cards}</div>`;
   }
 
   if (b.type === 'explore_grid') {
-    const ICONS = {
-      auth:       `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>`,
-      quickstart: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>`,
-      template:   `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>`,
-      upload:     `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>`,
-      webhook:    `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>`,
-      error:      `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>`,
-      status:     `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>`,
-      limits:     `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>`,
-      download:   `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>`,
+    /*
+     * EXPLORE ICON IMAGE MAP — unique image per icon type.
+     * Add an `img` field to any item in the page data to override per-item.
+     * If the image file is missing, the SVG fallback renders automatically.
+     */
+    const EX_IMG = {
+      auth:       '/images/documentation-key-icon.png',
+      quickstart: '/images/documentation-guide-icon.png',
+      template:   '/images/documentation-documents-icon.png',
+      upload:     '/images/documentation-upload-icon.png',
+      webhook:    '/images/documentation-bell-icon.png',
+      error:      '/images/documentation-error-icon.png',
+      status:     '/images/documentation-lifecycle-icon.png',
+      limits:     '/images/documentation-lock-icon.png',
+      download:   '/images/documentation-download-icon.png',
     };
-    const items = (d.items||[]).map(it => `
+    const EX_GRAD = {
+      auth:       'linear-gradient(135deg,rgba(64,128,224,0.2) 0%,rgba(45,116,222,0.38) 100%)',
+      quickstart: 'linear-gradient(135deg,rgba(234,88,12,0.2) 0%,rgba(194,65,12,0.38) 100%)',
+      template:   'linear-gradient(135deg,rgba(124,58,237,0.2) 0%,rgba(109,40,217,0.38) 100%)',
+      upload:     'linear-gradient(135deg,rgba(22,163,74,0.2) 0%,rgba(21,128,61,0.38) 100%)',
+      webhook:    'linear-gradient(135deg,rgba(217,119,6,0.2) 0%,rgba(180,83,9,0.38) 100%)',
+      error:      'linear-gradient(135deg,rgba(220,38,38,0.2) 0%,rgba(185,28,28,0.38) 100%)',
+      status:     'linear-gradient(135deg,rgba(2,132,199,0.2) 0%,rgba(3,105,161,0.38) 100%)',
+      limits:     'linear-gradient(135deg,rgba(124,58,237,0.2) 0%,rgba(109,40,217,0.38) 100%)',
+      download:   'linear-gradient(135deg,rgba(5,150,105,0.2) 0%,rgba(4,120,87,0.38) 100%)',
+    };
+    const EX_SVG = {
+      auth:       'M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z',
+      quickstart: 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z',
+      template:   'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z',
+      upload:     'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5',
+      webhook:    'M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0',
+      error:      'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z',
+      status:     'M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5',
+      limits:     'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
+      download:   'M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3',
+    };
+    const EX_COLOR = { auth:'#4080E0', quickstart:'#EA580C', template:'#7C3AED', upload:'#16A34A', webhook:'#D97706', error:'#DC2626', status:'#0284C7', limits:'#7C3AED', download:'#059669' };
+
+    const items = (d.items||[]).map(it => {
+      const imgSrc  = it.img || EX_IMG[it.icon] || '';
+      const grad    = EX_GRAD[it.icon] || EX_GRAD.auth;
+      const svgPath = EX_SVG[it.icon]  || EX_SVG.auth;
+      const color   = EX_COLOR[it.icon] || '#4080E0';
+      return `
       <div onclick="navTo('${it.navKey}')"
-           class="group flex gap-3 items-start p-4 rounded-xl border border-slate-100
-                  hover:border-[#4080E0] hover:bg-blue-50/30 cursor-pointer transition-all duration-150">
-        <div class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 mt-0.5
-                    text-slate-500 group-hover:bg-[#4080E0] group-hover:text-white transition-all duration-150">
-          ${ICONS[it.icon]||ICONS.auth}
+           class="group flex items-start gap-4 cursor-pointer p-4 rounded-xl
+                  hover:bg-slate-50 border border-transparent hover:border-slate-200
+                  transition-all duration-150">
+        <!-- Dynamic icon image with SVG fallback -->
+        <div class="w-11 h-11 rounded-xl flex-shrink-0 flex items-center justify-center border border-white/60 shadow-sm bg-[linear-gradient(239deg,rgba(255,144,144,0.08)_0%,rgba(134,125,201,0.08)_42%,rgba(45,116,222,0.08)_100%)]">
+          <img src="${imgSrc}" alt="${it.label} icon"
+               class="w-10 h-10 object-contain"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          
         </div>
-        <div class="min-w-0">
-          <div class="flex items-center gap-1.5 mb-0.5">
-            <span class="text-[13px] font-semibold text-slate-800 group-hover:text-[#2D74DE] transition-colors">${it.label}</span>
-            <svg class="w-3 h-3 text-slate-300 group-hover:text-[#4080E0] transition-colors opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-          </div>
-          <p class="text-[12px] text-slate-500 leading-relaxed m-0">${it.desc}</p>
+        <div class="min-w-0 flex-1">
+          <span class="block text-[14px] font-bold text-slate-900 group-hover:text-[#2D74DE] transition-colors mb-0.5">${it.label}</span>
+          <p class="text-[13px] text-slate-500 leading-relaxed m-0">${it.desc}</p>
         </div>
-      </div>`).join('');
-    return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 my-4">${items}</div>`;
+        <svg class="w-4 h-4 text-slate-300 group-hover:text-[#4080E0] flex-shrink-0 mt-0.5 opacity-0 group-hover:opacity-100 transition-all duration-150 -translate-x-1 group-hover:translate-x-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+        </svg>
+      </div>`;
+    }).join('');
+    return `<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1 my-4">${items}</div>`;
   }
 
   if (b.type === 'feature_list') {
@@ -2291,7 +2501,7 @@ function renderBlock(b) {
     const rows = (d.params||[]).map(p => `
       <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
         <td class="px-3.5 py-2 align-top">
-          <code class="font-mono text-[11px] text-indigo-600 bg-[#4080E00F] border border-indigo-100 px-1.5 py-0.5 rounded">${p.name}</code>
+          <code class="font-mono text-[11px] text-[#3277DF] bg-[#4080E00F] border border-indigo-100 px-1.5 py-0.5 rounded">${p.name}</code>
         </td>
         <td class="px-3.5 py-2 align-top">
           <span class="font-mono text-[11px] text-gray-500">${p.type||'—'}</span>
@@ -2334,6 +2544,104 @@ function renderBlock(b) {
         ${d.label||'Learn More'}
       </button>
     </div>`;
+
+  /* ── Quick-Start: intro hero ───────────────────────────────────────── */
+  if (b.type === 'qs_hero') {
+    return `
+      <div class="mb-10 pb-8 border-b border-slate-100">
+        <h2 class="text-[30px] sm:text-[34px] font-extrabold text-slate-900 mb-4 tracking-tight leading-tight">${d.title||'Get started with the AiSign API'}</h2>
+        <p class="text-[15.5px] text-slate-500 leading-relaxed max-w-[680px]">${d.desc||''}</p>
+      </div>`;
+  }
+
+  /* ── Quick-Start: numbered setup step (with optional screenshot) ────── */
+  if (b.type === 'qs_setup_step') {
+    const imgBlock = d.image ? `
+      <div class="img-lift-wrap rounded-xl mt-6">
+        <div class="img-lift-inner rounded-xl border border-slate-200 overflow-hidden shadow-md bg-slate-50 w-full" style="aspect-ratio:16/7;">
+          <img src="${d.image}"
+               alt="${d.title||''} screenshot"
+               class="w-full h-full object-cover"
+               onerror="this.parentElement.parentElement.style.display='none'">
+        </div>
+      </div>` : '';
+    const noteBlock = d.note ? `
+      <div class="mt-4 flex gap-3 items-start bg-blue-50 border border-blue-200 rounded-xl px-4 py-3.5">
+        <svg class="w-4 h-4 shrink-0 mt-0.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+        </svg>
+        <p class="text-[13.5px] text-blue-800 m-0 leading-relaxed">${d.note}</p>
+      </div>` : '';
+    return `
+      <div class="mb-10">
+        <h3 class="text-[20px] font-bold text-slate-900 mb-2.5">${d.title||''}</h3>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed mb-3">${d.content||''}</p>
+        ${noteBlock}${imgBlock}
+      </div>`;
+  }
+
+  /* ── Quick-Start: API calling step with code block (NO screenshots) ── */
+  if (b.type === 'qs_api_step') {
+    const bulletList = (d.bullets||[]).map(bl=>`
+      <li class="flex items-start gap-2 text-[14px] text-slate-600 leading-relaxed">
+        <span class="mt-[7px] w-1.5 h-1.5 rounded-full bg-[#4080E0] flex-shrink-0"></span>
+        <span>${bl}</span>
+      </li>`).join('');
+    const codeId = d.code ? _reg(d.code) : '';
+    const codeHtml = d.code ? `
+      <div class="mt-5 rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        <div class="flex items-center justify-between bg-slate-800 px-4 py-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-400"></span>
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="ml-2 text-[11px] font-mono font-semibold text-slate-400 uppercase tracking-widest">${d.codeLabel||'cURL'}</span>
+          </div>
+          <button onclick="doCopy(this,'${codeId}')" class="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-white transition-colors bg-transparent border-0 cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre class="!bg-slate-900 !m-0 !rounded-none overflow-x-auto px-5 py-4"><code class="language-bash text-[12.5px] leading-relaxed">${d.code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre>
+      </div>` : '';
+    return `
+      <div class="mb-10">
+        <h3 class="text-[20px] font-bold text-slate-900 mb-3">${d.title||''}</h3>
+        ${d.content ? `<p class="text-[14.5px] text-slate-600 leading-relaxed mb-3">${d.content}</p>` : ''}
+        ${bulletList ? `<ul class="space-y-2 mb-4 list-none m-0 p-0">${bulletList}</ul>` : ''}
+        ${codeHtml}
+      </div>`;
+  }
+
+  /* ── Quick-Start: explore advanced workflows ────────────────────────── */
+  if (b.type === 'qs_explore') {
+    const links = (d.links||[]).map(l=>`
+      <div class="flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-[#4080E0] hover:bg-blue-50/30 transition-all duration-150 cursor-pointer"
+           onclick="navTo('${l.navKey}')">
+        <svg class="w-4 h-4 mt-0.5 text-[#4080E0] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+        </svg>
+        <div>
+          <span class="font-semibold text-[#2D74DE] text-[14px]">${l.label}</span>
+          <span class="text-slate-600 text-[14px]"> — ${l.desc}</span>
+        </div>
+      </div>`).join('');
+    return `
+      <div class="mb-10">
+        <h3 class="text-[20px] font-bold text-slate-900 mb-2">Explore advanced workflows</h3>
+        <p class="text-[14.5px] text-slate-600 mb-5">Now that you've sent your first request, explore more complex scenarios:</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${links}</div>
+      </div>`;
+  }
+
+  /* ── Quick-Start: go live box ──────────────────────────────────────── */
+  if (b.type === 'qs_go_live') {
+    return `
+      <div class="mb-8 p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-slate-50 border border-blue-100">
+        <h3 class="text-[18px] font-bold text-slate-900 mb-2">Go Live</h3>
+        <p class="text-[14.5px] text-slate-600 leading-relaxed m-0">${d.content||''}</p>
+      </div>`;
+  }
 
   return '';
 }
@@ -2383,22 +2691,7 @@ renderSidebar();
 navigate(currentPage);
 window.addEventListener('load', () => { if (window.Prism) Prism.highlightAll(); });
 
-// Sidebar stops before footer
-(function () {
-  const sidebar = document.querySelector('aside');
-  const footer  = document.querySelector('footer');
-  const mainEl  = document.getElementById('main-content');
-  if (!sidebar || !footer || !mainEl) return;
-  function updateSidebarBottom() {
-    const footerTop = footer.getBoundingClientRect().top;
-    sidebar.style.bottom = footerTop < window.innerHeight
-      ? (window.innerHeight - footerTop) + 'px'
-      : '0px';
-  }
-  mainEl.addEventListener('scroll', updateSidebarBottom, { passive: true });
-  window.addEventListener('resize', updateSidebarBottom, { passive: true });
-  updateSidebarBottom();
-}());
+
 </script>
 </body>
 </html>

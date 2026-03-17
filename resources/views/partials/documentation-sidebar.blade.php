@@ -11,7 +11,7 @@
 
     <!-- Label -->
     <span class="block text-[1rem] font-semibold capitalize tracking-[0.08em] text-[#575757] px-3.5 py-3">
-      Ai Sign Documentation
+      AiSign Documentation
     </span>
 
     <!-- Nav tree (JS-rendered) -->
