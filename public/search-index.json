@@ -1,0 +1,158 @@
+[
+  {
+    "title": "Overview",
+    "section": "Getting Started",
+    "content": "AiSign API – Programmatically manage documents, templates, recipients, fields, and signing workflows. Any language, any platform — if it speaks HTTP, it works with AiSign. JSON responses on every endpoint. API key authentication in one header. 1 token = 1 activated document. Response format uses a consistent JSON envelope with a success flag, a human-readable message, a data payload, and an errors object on failure.",
+    "navKey": "introduction/overview"
+  },
+  {
+    "title": "Quick Start Guide",
+    "section": "Getting Started",
+    "content": "Get started with the AiSign API. Obtain your API key and send your first signing request — two complete workflows with cURL examples. Workflow A uses a template (fastest path). Workflow B uploads your own PDF, DOC, or DOCX document. Choose a plan, get your API key from the API dashboard, call the API using Authorization Bearer header. Free trial includes 100 tokens with no credit card required.",
+    "navKey": "introduction/quick-start"
+  },
+  {
+    "title": "API Keys",
+    "section": "Authentication",
+    "content": "All AiSign API requests require authentication via a private API key prefixed with sk_. Three authentication methods: Authorization Bearer header (recommended), X-API-Key header, or query parameter token. Permission scopes: templates:read, templates:write, documents:read, documents:write. Never expose your API key in client-side code or public repositories. Returns 401 Unauthorized if the key is invalid or missing.",
+    "navKey": "authentication/api-keys"
+  },
+  {
+    "title": "List Templates",
+    "section": "Templates",
+    "content": "Retrieve all signing templates available to the authenticated user. GET /templates requires templates:read permission. Returns an array of all templates belonging to the authenticated API key including placeholder counts and field configurations. Does not consume tokens.",
+    "navKey": "templates/list-templates"
+  },
+  {
+    "title": "View Template",
+    "section": "Templates",
+    "content": "Retrieve the full details of a specific template including its placeholder list, field configurations, and metadata. GET /templates/{id} requires templates:read permission. Use the template ID returned from the List Templates endpoint.",
+    "navKey": "templates/view-template"
+  },
+  {
+    "title": "Use Template",
+    "section": "Templates",
+    "content": "Instantiate a template with real recipients to create a signable document in a single API call. POST /templates/{id}/use requires templates:write permission. Consumes 1 API token. Pass recipients matching the template placeholder count — each gets a unique signing_url. Optionally include include_iframe: true to get an embeddable iframe URL.",
+    "navKey": "templates/use-template"
+  },
+  {
+    "title": "Upload Document",
+    "section": "Documents",
+    "content": "Upload a PDF, DOC, or DOCX file up to 10 MB using multipart form data. POST /documents/upload requires documents:write permission. The response returns a document_id used in all subsequent calls to add recipients, add fields, and activate the document. Uploading does not consume any tokens.",
+    "navKey": "documents/upload"
+  },
+  {
+    "title": "Add Recipients",
+    "section": "Documents",
+    "content": "Assign signers, approvers, or viewers to an uploaded document before activation. POST /documents/{id}/recipients requires documents:write. Each recipient needs a name, email address, and an action (sign, approve, or view). Multiple recipients can be added in a single request.",
+    "navKey": "documents/add-recipients"
+  },
+  {
+    "title": "Add Fields",
+    "section": "Documents",
+    "content": "Place signature, date, initials, and text input fields on document pages. POST /documents/{id}/fields requires documents:write. Each field is positioned using x, y, width, height as percentage values and a page_number. Link fields to a specific recipient using recipient_index.",
+    "navKey": "documents/add-fields"
+  },
+  {
+    "title": "Activate Document",
+    "section": "Documents",
+    "content": "Activate a prepared document to lock it, generate unique signing URLs for each recipient, and consume exactly 1 API token. POST /documents/{id}/use requires documents:write and consumes 1 token. The response includes a signing_url per recipient for embedding in an iframe or sending via email. Only the activation step consumes a token — uploading, adding recipients, and adding fields are free.",
+    "navKey": "documents/activate"
+  },
+  {
+    "title": "List Documents",
+    "section": "Documents",
+    "content": "Retrieve a paginated list of all non-draft documents associated with your API key. GET /documents requires documents:read permission. Returns document metadata including status, recipients, creation date, and activation time. Supports pagination parameters.",
+    "navKey": "documents/list-documents"
+  },
+  {
+    "title": "Check Document Status",
+    "section": "Documents",
+    "content": "Get the current signing status of a document. GET /documents/{id}/status requires documents:read. Possible status values: UPLOADED, PREPARED, PENDING (awaiting signatures), COMPLETED, CANCELLED. Use this endpoint to poll for completion or to trigger downstream workflows.",
+    "navKey": "documents/document-status"
+  },
+  {
+    "title": "List Draft Documents",
+    "section": "Documents",
+    "content": "Retrieve all documents that have not yet been activated (drafts). GET /documents/drafts requires documents:read. Draft documents have not consumed any tokens and can still be edited — recipients and fields can be updated before activation.",
+    "navKey": "documents/drafts"
+  },
+  {
+    "title": "Delete Draft Documents",
+    "section": "Documents",
+    "content": "Permanently delete one or more draft documents that have not yet been activated. DELETE /documents/drafts requires documents:write permission. Only non-activated draft documents can be deleted. Activated documents cannot be deleted.",
+    "navKey": "documents/delete-drafts"
+  },
+  {
+    "title": "Download Completed Document",
+    "section": "Documents",
+    "content": "Retrieve the fully signed PDF once all recipients have completed their signing actions. GET /documents/{id}/download requires documents:read permission. This endpoint is only available when the document status is COMPLETED. Returns the signed PDF as a binary stream or a download URL.",
+    "navKey": "documents/download"
+  },
+  {
+    "title": "Check Token Balance",
+    "section": "Tokens",
+    "content": "Monitor your remaining API token balance and usage history at any time. GET /tokens/balance returns available tokens, total purchased tokens, and consumption history. Each document activation consumes exactly 1 token — no hidden charges. 1 token = 1 activated document.",
+    "navKey": "tokens/balance"
+  },
+  {
+    "title": "API Logs",
+    "section": "Logs",
+    "content": "Retrieve a full 30-day history of every API call made with your key including the endpoint, HTTP method, status code, response time, and timestamp. GET /logs requires documents:read permission. Useful for debugging failed requests and auditing API usage patterns.",
+    "navKey": "logs/api-logs"
+  },
+  {
+    "title": "Webhooks Overview",
+    "section": "Webhooks",
+    "content": "Subscribe to real-time event notifications for document and field events. AiSign delivers an HTTP POST to your registered callback URL when events like document.completed or field.signed occur. Webhooks eliminate the need to poll the status endpoint repeatedly. Each event payload contains the document ID, event type, and relevant data.",
+    "navKey": "webhooks/overview"
+  },
+  {
+    "title": "Register Webhook",
+    "section": "Webhooks",
+    "content": "Subscribe to document and field events by registering a callback URL endpoint. POST /webhooks requires a url and an event type. Supported event types include document.completed, document.cancelled, field.signed. Returns a webhook ID used to manage the subscription. Returns 409 Conflict if the same URL and event type already exist.",
+    "navKey": "webhooks/register-webhook"
+  },
+  {
+    "title": "List Webhooks",
+    "section": "Webhooks",
+    "content": "Retrieve all active webhook subscriptions registered for your API key. GET /webhooks returns each webhook's ID, callback URL, event type, status, and creation date. Use this to audit your webhook registrations.",
+    "navKey": "webhooks/list-webhooks"
+  },
+  {
+    "title": "Get Webhook Details",
+    "section": "Webhooks",
+    "content": "Retrieve the full details of a specific webhook registration by its ID. GET /webhooks/{id} returns the callback URL, event type, current status, creation date, and recent delivery attempts including success or failure.",
+    "navKey": "webhooks/get-webhook-details"
+  },
+  {
+    "title": "Update Webhook",
+    "section": "Webhooks",
+    "content": "Update an existing webhook's callback URL or event type. PUT /webhooks/{id} accepts a new url or event. Use this to change the destination endpoint without deleting and recreating the webhook subscription.",
+    "navKey": "webhooks/update-webhook"
+  },
+  {
+    "title": "Delete Webhook",
+    "section": "Webhooks",
+    "content": "Permanently remove a webhook subscription. DELETE /webhooks/{id} stops all future event deliveries to that callback URL. This action is irreversible — recreate the webhook if needed.",
+    "navKey": "webhooks/delete-webhook"
+  },
+  {
+    "title": "Error Reference",
+    "section": "Error Handling",
+    "content": "Full list of HTTP status codes, standard error response shapes, and how to handle failures gracefully. 200 OK: request succeeded. 201 Created: resource created. 401 Unauthorized: invalid or missing API key. 402 Payment Required: no API tokens available. 404 Not Found: resource does not exist. 409 Conflict: resource already exists (e.g. duplicate webhook). 422 Unprocessable Entity: validation failed or business rule violated. 500 Internal Server Error: unexpected server-side error.",
+    "navKey": "error-handling/errors"
+  },
+  {
+    "title": "Limits & Quotas",
+    "section": "Limits & Quotas",
+    "content": "Platform constraints including file size limits, rate limits, and field counts. Maximum upload file size is 10 MB for PDF, DOC, and DOCX files. Rate limits apply per API key. Maximum number of recipients per document and maximum fields per page are defined per plan. Exceeding limits returns a 422 Unprocessable Entity response.",
+    "navKey": "limits/limits"
+  },
+  {
+    "title": "Document Status Lifecycle",
+    "section": "Status Lifecycle",
+    "content": "Understand the complete state machine for AiSign documents: UPLOADED → PREPARED → PENDING → COMPLETED (or CANCELLED). UPLOADED: file received, no recipients or fields yet. PREPARED: recipients and fields added, ready to activate. PENDING: activated and awaiting recipient signatures. COMPLETED: all recipients have signed, download is available. CANCELLED: document was cancelled and cannot be reactivated.",
+    "navKey": "status-lifecycle/lifecycle"
+  }
+]

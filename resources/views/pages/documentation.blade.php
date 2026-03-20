@@ -99,6 +99,7 @@
   }
 </style>
 </head>
+<script src="/js/docs-search.js" defer></script>
 <body class="font-sans bg-slate-50 text-slate-800 antialiased">
 
 @include('partials.documentation-header')
