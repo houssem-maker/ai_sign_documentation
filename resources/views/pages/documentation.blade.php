@@ -192,9 +192,6 @@ const PAGES = {
           ]
       }},
 
-      { type:'note', data:{ variant:'warning', content:'The API is currently in the development phase and is only available via <strong>HTTP</strong>. HTTPS is required for all production environments.' }},
-
-
       { type:'section_header', data:{ title:'What You Can Build', anchor:'what', level:2 }},
       { type:'text', data:{ content:'The AiSign API covers the complete document signing lifecycle — from upload to signed PDF download.' }},
       { type:'feature_cards', data:{ items:[
